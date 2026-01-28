@@ -8,15 +8,28 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
-            height: 100vh;
+            padding: 20px; /* Added padding so content doesn't touch edges on mobile */
+            min-height: 100vh; /* Changed from height to min-height to allow scrolling */
             display: flex;
             justify-content: center;
             align-items: center;
             background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
             font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
+            overflow-x: hidden; /* Only hide horizontal overflow */
             position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Container for hearts so they stay fixed in the background while scrolling */
+        #heart-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 0;
+            overflow: hidden;
         }
 
         /* Floating Background Hearts */
@@ -37,9 +50,11 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 500px;
+            width: 100%; /* Ensure it fits on small screens */
             z-index: 10;
             position: relative;
             border: 5px solid #ff4d4d;
+            margin: auto; /* Helps with centering in flex container during scroll */
         }
 
         /* The "Cute" Header that gets interrupted */
@@ -61,6 +76,16 @@
             text-transform: uppercase;
             text-shadow: 2px 2px 0px #000;
             animation: shake 0.5s infinite;
+        }
+
+        /* Responsive font size for small screens */
+        @media (max-width: 600px) {
+            .angry-text {
+                font-size: 3rem;
+            }
+            .card {
+                padding: 2rem 1rem;
+            }
         }
 
         .date-display {
@@ -102,7 +127,7 @@
         /* Animations */
         @keyframes float {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
         @keyframes shake {
@@ -123,6 +148,8 @@
 </head>
 <body>
 
+    <div id="heart-container"></div>
+
     <script>
         function createHeart() {
             const heart = document.createElement('div');
@@ -130,7 +157,9 @@
             heart.innerHTML = '❤️';
             heart.style.left = Math.random() * 100 + "vw";
             heart.style.animationDuration = Math.random() * 2 + 3 + "s";
-            document.body.appendChild(heart);
+            
+            // Append to the fixed container instead of body
+            document.getElementById('heart-container').appendChild(heart);
             
             setTimeout(() => {
                 heart.remove();
@@ -177,7 +206,6 @@
         // 3. Button Action
         function closeWindow() {
             alert("Good bye! Come back on February 14th.");
-            // Note: Scripts can usually only close windows that were opened by a script.
             // Rickroll
             window.location.href = "https://youtu.be/dQw4w9WgXcQ?si=NqvIWJIsHxEJnLQk";
         }
